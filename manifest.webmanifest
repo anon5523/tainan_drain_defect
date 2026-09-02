@@ -1,0 +1,19 @@
+{
+  "name": "臺南市雨水下水道缺失圖台",
+  "short_name": "下水道缺失圖台",
+  "description": "臺南市雨水下水道縱走調查缺失分布圖台，含缺失分級、工程契約分配、現況照片與使用者定位。",
+  "lang": "zh-Hant",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FBF5EC",
+  "theme_color": "#FBF5EC",
+  "categories": ["utilities", "productivity"],
+  "icons": [
+    {"src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "./icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

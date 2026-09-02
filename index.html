@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>臺南市雨水下水道缺失圖台</title>
+<meta name="description" content="臺南市雨水下水道縱走調查缺失分布圖台，含缺失分級、工程契約分配與現況照片。">
+<meta name="theme-color" content="#FBF5EC">
+<meta name="color-scheme" content="light">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="下水道缺失圖台">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="stylesheet" href="./vendor/leaflet.css">
+<link rel="stylesheet" href="./assets/app.css">
+</head>
+<body>
+
+<div id="boot">
+  <div class="boot-in">
+    <div class="boot-mark"></div>
+    <div class="boot-t">臺南市雨水下水道缺失圖台</div>
+    <div class="boot-s" id="bootMsg">載入資料中…</div>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <div id="map"></div>
+
+  <!-- 手機頂部列 -->
+  <div id="topbar">
+    <button id="mFilter" class="tb" aria-label="開啟篩選">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
+      <span id="mCount">—</span>
+    </button>
+    <button id="mLocate" class="tb icon" aria-label="定位我的位置">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="7"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke-linecap="round"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg>
+    </button>
+  </div>
+
+  <aside id="panel" aria-label="篩選與清單">
+    <button id="grab" aria-label="展開或收合面板"></button>
+
+    <header class="brand">
+      <div class="eyebrow">縱走調查成果</div>
+      <h1>臺南市雨水下水道<br>管渠缺失分布圖</h1>
+      <div class="sub" id="scope">—</div>
+    </header>
+
+    <div id="scroll">
+      <div class="total"><b id="cnt">0</b><span>筆缺失，依嚴重程度分級</span></div>
+      <div class="bar" id="bar"></div>
+      <div class="grades" id="grades"></div>
+
+      <div class="sec">
+        <div class="sec-h"><span>我的位置</span><button class="reset" id="clrGeo" hidden>關閉</button></div>
+        <button class="btn wide" id="locate">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="7"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke-linecap="round"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg>
+          定位並列出附近缺失
+        </button>
+        <div class="hint" id="geoMsg">需允許瀏覽器使用定位。定位後清單會依距離排序，並可設定搜尋半徑。</div>
+        <div id="radiusWrap" hidden>
+          <div class="rowlab">
+            <button class="chip" id="radiusOn" aria-pressed="false">只看半徑內</button>
+            <b id="radiusVal">500 m</b>
+          </div>
+          <input type="range" id="radius" min="100" max="3000" step="100" value="500" aria-label="搜尋半徑">
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-h"><span>上色依據</span></div>
+        <div class="seg" id="colorby">
+          <button data-mode="grade" aria-pressed="true">缺失等級</button>
+          <button data-mode="contract" aria-pressed="false">工程契約</button>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-h"><span>工程契約 / 分配計畫</span><button class="reset" data-reset="contract">全部</button></div>
+        <div class="cons" id="cons"></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-h"><span>行政區</span><button class="reset" data-reset="town">全部</button></div>
+        <div class="chips" id="towns"></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-h"><span>缺失類別</span><button class="reset" data-reset="type">全部</button></div>
+        <div class="chips" id="types"></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-h"><span>改善狀態</span><button class="reset" data-reset="fixed">全部</button></div>
+        <div class="chips" id="fixed"></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-h"><span>關鍵字</span></div>
+        <div class="field">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+          <input id="q" type="search" placeholder="管線編號、路段、修補編號或說明" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-h"><span>匯出目前篩選結果</span></div>
+        <div class="exp">
+          <button class="btn" id="exGeo">GeoJSON</button>
+          <button class="btn" id="exCsv">CSV</button>
+        </div>
+        <div class="hint">座標為 WGS84，屬性含 TWD97 TM2 X／Y。完整 Shapefile／CSV／統計表見 <a href="./gis/tainan-drain-defects-twd97-shp.zip">gis 資料夾</a>。</div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-h"><span id="listTitle">缺失清單</span><span id="listcnt" style="letter-spacing:0"></span></div>
+        <div class="list" id="list"></div>
+      </div>
+
+      <div class="foot">
+        資料：臺南市雨水下水道縱走調查屬性資料表、各區照片缺失紀錄表、各區破損統計 v4.0<br>
+        行政區界 g0v/twgeojson　底圖 © OpenStreetMap／CARTO
+      </div>
+    </div>
+  </aside>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="./vendor/leaflet.js"></script>
+<script src="./assets/app.js"></script>
+</body>
+</html>
