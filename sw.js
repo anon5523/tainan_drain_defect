@@ -1,5 +1,5 @@
 /* 臺南市雨水下水道缺失圖台 — Service Worker */
-const VERSION = 'v2';
+const VERSION = 'v3';
 const SHELL = `shell-${VERSION}`;
 const TILES = `tiles-${VERSION}`;
 const PHOTOS = `photos-${VERSION}`;
@@ -16,6 +16,7 @@ const SHELL_FILES = [
   './data/records.json',
   './data/tainan.json',
   './data/photo_index.json',
+  './data/network.json',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png'
@@ -51,7 +52,7 @@ self.addEventListener('fetch', e => {
   const url = new URL(req.url);
 
   // 底圖磚：先用快取，同時背景更新
-  if(/basemaps\.cartocdn\.com/.test(url.hostname)){
+  if(/tile\.openstreetmap\.org/.test(url.hostname)){
     e.respondWith((async () => {
       const c = await caches.open(TILES);
       const hit = await c.match(req);

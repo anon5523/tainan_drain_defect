@@ -79,6 +79,15 @@
       </div>
 
       <div class="sec">
+        <div class="sec-h"><span>管線圖層</span></div>
+        <div class="chips" id="netLayers">
+          <button class="chip net" id="layerPipes" aria-pressed="true">管線段<span class="n" id="pipeCnt"></span></button>
+          <button class="chip net" id="layerManholes" aria-pressed="false">人孔<span class="n" id="mhCnt"></span></button>
+        </div>
+        <div class="hint">管線段依缺失紀錄的管線編號（起迄人孔）連接繪製，僅涵蓋南、安平、中西、安南 4 區；仁德區目前無人孔清冊，暫無法繪製。</div>
+      </div>
+
+      <div class="sec">
         <div class="sec-h"><span>工程契約 / 分配計畫</span><button class="reset" data-reset="contract">全部</button></div>
         <div class="cons" id="cons"></div>
       </div>
@@ -122,7 +131,7 @@
 
       <div class="foot">
         資料：臺南市雨水下水道縱走調查屬性資料表、各區照片缺失紀錄表、各區破損統計 v4.0<br>
-        行政區界 g0v/twgeojson　底圖 © OpenStreetMap／CARTO
+        行政區界 g0v/twgeojson　底圖 © OpenStreetMap contributors
       </div>
     </div>
   </aside>
