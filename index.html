@@ -79,6 +79,19 @@
       </div>
 
       <div class="sec">
+        <div class="sec-h"><span>缺失標籤</span></div>
+        <label class="chk master"><input type="checkbox" id="lblOn" checked><span>顯示缺失標籤</span></label>
+        <div class="chkgrid" id="lblFields">
+          <label class="chk"><input type="checkbox" data-f="grade" checked><span>等級</span></label>
+          <label class="chk"><input type="checkbox" data-f="type" checked><span>缺失類別</span></label>
+          <label class="chk"><input type="checkbox" data-f="no" checked><span>編號</span></label>
+          <label class="chk"><input type="checkbox" data-f="mh" checked><span>人孔＋距離</span></label>
+          <label class="chk"><input type="checkbox" data-f="contract" checked><span>工程契約</span></label>
+        </div>
+        <div class="hint">地圖放大到街廓層級才會出現標籤。取消勾選即可移除整個標籤，或只拿掉不需要的欄位。</div>
+      </div>
+
+      <div class="sec">
         <div class="sec-h"><span>管線圖層</span></div>
         <div class="chips" id="netLayers">
           <button class="chip net" id="layerPipes" aria-pressed="true">管線段<span class="n" id="pipeCnt"></span></button>

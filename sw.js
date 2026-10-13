@@ -1,5 +1,5 @@
 /* 臺南市雨水下水道缺失圖台 — Service Worker */
-const VERSION = 'v3';
+const VERSION = 'v4';
 const SHELL = `shell-${VERSION}`;
 const TILES = `tiles-${VERSION}`;
 const PHOTOS = `photos-${VERSION}`;

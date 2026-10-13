@@ -80,6 +80,12 @@ h1{font-weight:600;font-size:20px;line-height:1.35;margin:6px 0 4px}
 .chip .n{opacity:.7;margin-left:5px;font-size:11px}
 .chip:disabled{opacity:.38;cursor:not-allowed}
 
+.chk{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);cursor:pointer;padding:5px 0}
+.chk input{width:18px;height:18px;margin:0;accent-color:var(--accent-deep);flex:none;cursor:pointer}
+.chk.master{font-weight:500;padding:2px 0 8px}
+.chkgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px;padding-left:2px}
+.chkgrid.off{opacity:.4;pointer-events:none}
+
 .cons{display:flex;flex-direction:column;gap:5px}
 .con{display:flex;align-items:flex-start;gap:9px;padding:9px 10px;border-radius:9px;cursor:pointer;border:1px solid transparent;text-align:left;font:inherit;background:none;width:100%}
 .con[data-on="0"]{opacity:.4}

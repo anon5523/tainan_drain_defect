@@ -239,16 +239,30 @@ function draw(rows){
   updateLabels();
 }
 
+/* 標籤顯示設定（記在瀏覽器，下次開啟沿用） */
+const LABEL = {on:true, grade:true, type:true, no:true, mh:true, contract:true};
+try{ Object.assign(LABEL, JSON.parse(localStorage.getItem('labelPrefs') || '{}')); }catch(e){}
+const saveLabel = () => { try{ localStorage.setItem('labelPrefs', JSON.stringify(LABEL)); }catch(e){} };
+
 function labelHtml(r){
   const c = CN[r.contract];
-  return `<span class="lg" style="background:${GC[r.grade]}">${r.grade === '未分級' ? '—' : r.grade}</span>` +
-    `<b>${esc(r.type)}</b> <span class="ls">${esc(r.repairNo || r.pno)}</span>` +
-    (r.dis !== '' ? ` <span class="ls">${esc(r.mh)}+${esc(r.dis)}m</span>` : '') +
-    (r.contract !== 'C0' ? ` <span class="ct" style="background:${c.c}">${esc(c.short)}</span>` : '');
+  const parts = [];
+  if(LABEL.grade) parts.push(`<span class="lg" style="background:${GC[r.grade]}">${r.grade === '未分級' ? '—' : r.grade}</span>`);
+  if(LABEL.type) parts.push(`<b>${esc(r.type)}</b>`);
+  if(LABEL.no) parts.push(`<span class="ls">${esc(r.repairNo || r.pno)}</span>`);
+  if(LABEL.mh && r.dis !== '') parts.push(`<span class="ls">${esc(r.mh)}+${esc(r.dis)}m</span>`);
+  if(LABEL.contract && r.contract !== 'C0') parts.push(`<span class="ct" style="background:${c.c}">${esc(c.short)}</span>`);
+  return parts.join(' ');
+}
+
+function refreshLabels(){
+  markers.forEach(m => { if(m.getTooltip()) m.unbindTooltip(); });
+  updateLabels();
 }
 
 function updateLabels(){
-  const on = map.getZoom() >= LABEL_ZOOM;
+  const any = LABEL.on && (LABEL.grade || LABEL.type || LABEL.no || LABEL.mh || LABEL.contract);
+  const on = any && map.getZoom() >= LABEL_ZOOM;
   const b = map.getBounds();
   let n = 0;
   markers.forEach(m => {
@@ -259,8 +273,8 @@ function updateLabels(){
     }else if(m.getTooltip()) m.unbindTooltip();
   });
   const note = document.getElementById('zoomnote');
-  if(note) note.innerHTML = on
-    ? `已顯示 <b>${n}</b> 筆缺失標籤　·　點選圓點看明細`
+  if(note) note.innerHTML = !any ? '缺失標籤已關閉　·　點選圓點看明細'
+    : on ? `已顯示 <b>${n}</b> 筆缺失標籤　·　點選圓點看明細`
     : '僅顯示臺南市範圍　·　放大至 <b>街廓層級</b> 自動顯示缺失標籤';
 }
 
@@ -600,6 +614,19 @@ function bindUI(){
       drawLegend();
     };
   });
+
+  const lblOn = $('#lblOn'), lblBox = $('#lblFields');
+  lblOn.checked = LABEL.on;
+  lblBox.classList.toggle('off', !LABEL.on);
+  lblBox.querySelectorAll('input[data-f]').forEach(cb => {
+    cb.checked = LABEL[cb.dataset.f];
+    cb.onchange = () => {LABEL[cb.dataset.f] = cb.checked; saveLabel(); refreshLabels();};
+  });
+  lblOn.onchange = () => {
+    LABEL.on = lblOn.checked; saveLabel();
+    lblBox.classList.toggle('off', !LABEL.on);
+    refreshLabels();
+  };
 
   $('#layerPipes').onclick = e => {
     if(e.currentTarget.disabled) return;
